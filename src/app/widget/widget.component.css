@@ -1,0 +1,6 @@
+.flex{
+  width: 400px;
+  height: 400px;
+  resize: both;
+  overflow: auto;  padding: 30px;
+}
