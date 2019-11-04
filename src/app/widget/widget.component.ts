@@ -5,6 +5,7 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import {CurrencyValue} from '../models/currency-value';
 import { CookieService } from 'ngx-cookie-service';
 import {ResizedEvent} from 'angular-resize-event';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-widget',
@@ -74,6 +75,8 @@ export class WidgetComponent implements OnInit {
   public lineChartType = 'line';
   public widgetHeight = '200';
   public widgetWidth = '200';
+  public widgetLeft = '0';
+  public widgetTop = '0';
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
@@ -96,11 +99,17 @@ export class WidgetComponent implements OnInit {
 
   updateWidgetSize() {
     if (!this.cookieService.check('widget_width')) {
-      this.cookieService.set('widget_width', '400');
-      this.cookieService.set('widget_height', '400');
+      this.cookieService.set('widget_width', '435');
+      this.cookieService.set('widget_height', '224');
+      this.cookieService.set('widget_top', '0');
+      this.cookieService.set('widget_left', '0');
     }
     this.widgetHeight = this.cookieService.get('widget_height');
     this.widgetWidth = this.cookieService.get('widget_width');
+    this.widgetLeft = this.cookieService.get('widget_left');
+    this.widgetTop = this.cookieService.get('widget_top');
+
+    console.log(this.cookieService.getAll());
   }
 
   dataToChart(data) {
@@ -124,6 +133,13 @@ export class WidgetComponent implements OnInit {
       allSets.push(sets);
     });
     this.lineChartData = allSets;
+  }
+  onDrop(event) {
+    const top = isNaN(Number(this.cookieService.get('widget_left'))) ? '0' : this.cookieService.get('widget_left');
+    const left = isNaN(Number(this.cookieService.get('widget_top'))) ? '0' : this.cookieService.get('widget_top');
+    this.cookieService.set('widget_left', Number(this.cookieService.get('widget_left')) + event.distance.x);
+    this.cookieService.set('widget_top', Number(this.cookieService.get('widget_top')) + event.distance.y);
+
   }
 
   onResized(event: ResizedEvent) {
