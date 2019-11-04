@@ -2,19 +2,17 @@ import {ServerAPIService} from '../services/server-api.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
-import {ResizedEvent} from "angular-resize-event";
+import {CurrencyValue} from '../models/currency-value';
+import { CookieService } from 'ngx-cookie-service';
+import {ResizedEvent} from 'angular-resize-event';
+
 @Component({
   selector: 'app-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.css']
 })
 export class WidgetComponent implements OnInit {
-  public map = new Map();
-  public lineChartData: ChartDataSets[] = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
-    { data: [55, 44, 55, 66, 77, 88, 99], label: 'Series C' }
-  ];
+  public lineChartData: ChartDataSets[] = [{}];
   public lineChartLabels: Label[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: true,
@@ -74,25 +72,64 @@ export class WidgetComponent implements OnInit {
   ];
   public lineChartLegend = true;
   public lineChartType = 'line';
+  public widgetHeight = '200';
+  public widgetWidth = '200';
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
-  constructor(private serverAPIService: ServerAPIService) { }
+  constructor(private serverAPIService: ServerAPIService, private cookieService: CookieService) { }
 
   ngOnInit() {
-    this.serverAPIService.getConfig().subscribe(a => {
+    this.updateWidgetSize();
+    this.updateChartData();
+  }
 
+  updateChartData() {
+    this.serverAPIService.getCurrencies().then(res => {
+        this.dataToChart(res);
+        this.chart.updateColors();
+      },
+      error =>  {
+        console.error('An error occurred in retrieving rx list, navigating to login: ', error);
+      });
+  }
+
+  updateWidgetSize() {
+    if (!this.cookieService.check('widget_width')) {
+      this.cookieService.set('widget_width', '400');
+      this.cookieService.set('widget_height', '400');
+    }
+    this.widgetHeight = this.cookieService.get('widget_height');
+    this.widgetWidth = this.cookieService.get('widget_width');
+  }
+
+  dataToChart(data) {
+    const chartDates = new Set();
+    const currencyToValue = new Map();
+    this.lineChartLabels = [];
+    for (const entry of (data as CurrencyValue[])) {
+      if (!chartDates.has(entry.time_created)) {
+        chartDates.add(entry.time_created);
+        this.lineChartLabels.push(new Date(entry.time_created).toDateString().toString());
+      }
+      if (currencyToValue.has(entry.name)) {
+        currencyToValue.get(entry.name).push(entry.rate);
+      } else {
+        currencyToValue.set(entry.name, [entry.rate]);
+      }
+    }
+    const allSets = [];
+    currencyToValue.forEach((value: boolean, key: string) => {
+      console.log(key, value);
+      const sets = {label: key, data: value};
+      allSets.push(sets);
     });
-  }
-  // events
-  public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
-    console.log(event, active);
+    this.lineChartData = allSets;
   }
 
-  public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
-    console.log(event, active);
-  }
   onResized(event: ResizedEvent) {
-    console.log(event);
+    this.cookieService.set('widget_width', (event.newWidth + 2).toString());
+    this.cookieService.set('widget_height', (event.newHeight + 2).toString());
+    console.log(this.cookieService.getAll());
   }
 }

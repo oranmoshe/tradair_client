@@ -7,9 +7,9 @@ import { WidgetComponent } from './widget/widget.component';
 import {HttpClientModule} from '@angular/common/http';
 import {ServerAPIService} from './services/server-api.service';
 import { ChartsModule } from 'ng2-charts';
-import {AngularResizedEventModule} from 'angular-resize-event';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-
+import {CookieService} from 'ngx-cookie-service';
+import { AngularResizedEventModule } from 'angular-resize-event';
 
 @NgModule({
   declarations: [
@@ -21,10 +21,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     HttpClientModule,
     AppRoutingModule,
     ChartsModule,
-    AngularResizedEventModule,
-    DragDropModule
+    DragDropModule,
+    AngularResizedEventModule
   ],
-  providers: [ServerAPIService],
+  providers: [ServerAPIService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

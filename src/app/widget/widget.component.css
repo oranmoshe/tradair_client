@@ -1,11 +1,16 @@
 :host{
-  position: relative;
 }
-.flex{
-  width: 400px;
-  height: 400px;
+.widget{
+  position: relative;
   resize: both;
   overflow: auto;
-  padding: 10px;
   border: 1px solid black;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.handle{
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  color: slategray;
 }
