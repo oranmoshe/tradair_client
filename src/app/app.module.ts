@@ -8,6 +8,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {ServerAPIService} from './services/server-api.service';
 import { ChartsModule } from 'ng2-charts';
 import {AngularResizedEventModule} from 'angular-resize-event';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import {AngularResizedEventModule} from 'angular-resize-event';
     HttpClientModule,
     AppRoutingModule,
     ChartsModule,
-    AngularResizedEventModule
+    AngularResizedEventModule,
+    DragDropModule
   ],
   providers: [ServerAPIService],
   bootstrap: [AppComponent]

@@ -1,17 +1,19 @@
-
-<div class="flex" (resized)="onResized($event)">
-  <div class="flex-item">
-    <div style="display: block;">
-      <canvas baseChart width="400" height="400"
-              [datasets]="lineChartData"
-              [labels]="lineChartLabels"
-              [options]="lineChartOptions"
-              [colors]="lineChartColors"
-              [legend]="lineChartLegend"
-              [chartType]="lineChartType"
-              [plugins]="lineChartPlugins"
-              (chartHover)="chartHovered($event)"
-              (chartClick)="chartClicked($event)"></canvas>
+<section class="widget" cdkDrag>
+  <div class="dragHandle" cdkDragHandle="">☰</div>
+  <div class="flex" (resized)="onResized($event)">
+    <div class="flex-item">
+      <div style="display: block;">
+        <canvas baseChart width="400" height="400"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [colors]="lineChartColors"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"
+                [plugins]="lineChartPlugins"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)" ></canvas>
+      </div>
     </div>
   </div>
-</div>
+</section>
