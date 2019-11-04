@@ -120,7 +120,6 @@ export class WidgetComponent implements OnInit {
     }
     const allSets = [];
     currencyToValue.forEach((value: boolean, key: string) => {
-      console.log(key, value);
       const sets = {label: key, data: value};
       allSets.push(sets);
     });
@@ -130,6 +129,5 @@ export class WidgetComponent implements OnInit {
   onResized(event: ResizedEvent) {
     this.cookieService.set('widget_width', (event.newWidth + 2).toString());
     this.cookieService.set('widget_height', (event.newHeight + 2).toString());
-    console.log(this.cookieService.getAll());
   }
 }
